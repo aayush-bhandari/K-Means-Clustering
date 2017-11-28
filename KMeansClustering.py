@@ -64,6 +64,15 @@ def recomputeMeans(predictedCategory, means):
     return means
     #print(means)
 
+#Calculate sum squared error
+def caculateSSE(means,predictedCategory,cordinates):
+    sse = 0
+    for p in predictedCategory:
+        list_points = predictedCategory[p]
+        for id in list_points:
+            sse = sse + ed([cordinates[id]], [means[p]])
+    print("SSE = ",sse[0][0])
+
 #calulate Mean
 #Main method
 def main():
@@ -87,6 +96,6 @@ def main():
             break
     print("Final Category",predictedCategory)
 
-
+    caculateSSE(means,predictedCategory,cordinates)
 
 main()
