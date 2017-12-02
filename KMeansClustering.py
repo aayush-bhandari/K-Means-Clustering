@@ -1,6 +1,5 @@
-import numpy as np,sys
+import numpy as np,sys,math
 import copy
-from sklearn.metrics.pairwise import euclidean_distances as ed
 import random
 #input_file = open("test_data.txt","r")
 input_file = open(sys.argv[2],"r")
@@ -18,7 +17,6 @@ def preProcess():
 
 
 #select K Means. Randomly select 5 points as means
-
 def kMeans(k,means):
     for x in range(k):
         id = random.randint(1, len(cordinates))
@@ -26,17 +24,15 @@ def kMeans(k,means):
     #print(means)
     return means;
 
-
-
 # calculate distance for each point from all means
 def predictMean(cordinates, means,predictedCategory):
     for id in cordinates:
         minDistance = 10
         tempMean = 0
         for mean in means:
-            distance = (ed([cordinates[id]], [means[mean]]))
-            if(distance[0][0]<minDistance):
-                minDistance = distance[0][0]
+            distance = (getEuclideanDistance(cordinates[id], means[mean]))
+            if(distance<minDistance):
+                minDistance = distance
                 tempMean = mean
         # assign each point to a mean to which it is closer
         if not tempMean in predictedCategory:
@@ -59,15 +55,18 @@ def recomputeMeans(predictedCategory, means):
         means[eachMean] = [newX, newY]
     return means
 
+def getEuclideanDistance(p1,p2):
+    return math.sqrt(math.pow(p1[0]-p2[0], 2) +math.pow(p1[1]-p2[1], 2))
+
 #Calculate sum squared error
 def caculateSSE(means,predictedCategory,cordinates):
     sse = 0
     for p in predictedCategory:
         list_points = predictedCategory[p]
         for id in list_points:
-            sse = sse + ed([cordinates[id]], [means[p]])
-    print("SSE = ",sse[0][0])
-    return sse[0][0]
+            sse = (sse + getEuclideanDistance(cordinates[id], means[p]))
+    print("SSE = ",sse)
+    return sse
 
 
 #Main method
